@@ -32,6 +32,11 @@ namespace ProductsApi
             services.AddDbContext<DataContext>(
                 options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
             );
+            services.AddCors(options => {
+                options.AddDefaultPolicy(builder => {
+                    builder.WithOrigins("https://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+                });
+            });
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IDataContext>(provider => provider.GetService<DataContext>());
             services.AddControllers();
@@ -54,6 +59,8 @@ namespace ProductsApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
